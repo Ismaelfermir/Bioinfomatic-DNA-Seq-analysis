@@ -89,9 +89,8 @@ do
 	echo 'Obteniendo tabla para recalibrar --' $samplename
 	time gatk BaseRecalibrator \
 	-I $file \
-	-R /carpetas_docker/references/UCSC_hg38/hg38.fa \
-	--known-sites
- /carpetas_docker/annovar/dbSNP151_hg38UCSC_LENA/hg38_dbSNP151_LENA.vcf \
+	-R /reference.fa \
+	--known-sites SNP.data.base.vcf \
 	-O $samplename'.table'
 done
 
@@ -102,9 +101,9 @@ for  file in *_sortv2.bam
 do
 	samplename=$(echo $file | sed 's:_sortv2.bam::g')
 	sampletable=$(echo $file | sed 's:_sortv2.bam:.table:g')
-	echo 'Recalibrando las lecturas a partir de la tabla de recalibrado --' $samplename
+	echo 'Recalibrando el alineamiento a partir de la tabla de recalibrado --' $samplename
 	time  gatk ApplyBQSR \
-	-R /carpetas_docker/references/UCSC_hg38/hg38.fa \
+	-R /reference.fa \
 	-I $file \
 	--bqsr-recal-file $sampletable \
 	-O $samplename'_BaseRecalibrator.bam'
