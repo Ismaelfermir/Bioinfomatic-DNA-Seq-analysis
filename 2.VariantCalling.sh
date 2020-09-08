@@ -2,7 +2,7 @@
 #	Author: Ismael Fernandez
 #	Modified year: 2020
 
-# Samtools sort del archivo bam
+# Samtools ordenar el alineamiento
 
 echo $1
 cd $1
@@ -25,7 +25,7 @@ do
 	echo "Done!"
 done
 
-# mpileup2017 run: creating file for VarScan
+# mpileup2017 para archivo de VarScan
 
 for file in *.sorted.bam
 do
@@ -40,7 +40,7 @@ done
 #                      ***************************************
 
 
-# VarScan SNPs and INDELs calling run
+# VarScan SNPs e INDELs
 
 cd $1
 
@@ -65,31 +65,5 @@ do
 	echo "VCF INDELs file for: "$file_name" has been generated"
 	echo "Done!"
 	echo '---------------------------------------------------------------------------'
-done
-
-# Annovar annotation
-
-echo $1
-cd $1
-
-db='/annovar/humandb'
-Annovar='/annovar/table_annovar.pl'
-
-for file in *snp.vcf
-do
-	file_name=$( echo $file | sed 's:.varscan.snp.vcf::g' )
-	echo $file_name
-	echo "Anotando: " $file_name
-	time perl $Annovar --buildver hg19 --remove --outfile $file_name"_snp" --protocol refGene,cytoBand,1000g2015aug_all,1000g2015aug_afr,1000g2015aug_eas,avsnp150,cosmic70,clinvar_20190305 --operation g,r,f,f,f,f,f,f --nastring "." --vcfinput $file $db
-	echo "Done!"
-done
-
-for file in *indel.vcf
-do
-	file_name=$( echo $file | sed 's:.varscan.indel.vcf::g' )
-	echo $file_name
-	echo "Anotando: " $file_name
-	time perl $Annovar --buildver hg19 --remove --outfile $file_name"_indel" --protocol refGene,cytoBand,1000g2015aug_all,1000g2015aug_afr,1000g2015aug_eas,avsnp150,cosmic70,clinvar_20190305 --operation g,r,f,f,f,f,f,f --nastring "." --vcfinput $file $db
-	echo "Done!"
 done
 
